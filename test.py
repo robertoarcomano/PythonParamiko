@@ -13,6 +13,18 @@ def exec_command(command):
         time.sleep(random.random())
 
 
+def get(file):
+    connection = Utilities.SSHConnection("localhost", "berto", "/home/berto/.ssh/id_rsa")
+    connection.get(file)
+
+
+def put(src, dst):
+    connection = Utilities.SSHConnection("localhost", "berto", "/home/berto/.ssh/id_rsa")
+    connection.put(src, dst)
+
+
+put("test.py", "test.py")
+get("start_jenkins.sh")
 commands = ["find /usr", "find /var"]
 threads = list()
 for command in commands:
