@@ -1,6 +1,7 @@
 import paramiko
 from scp import SCPClient
 
+
 class SSHConnection:
     def __init__(self, hostname, username, key_path):
         try:
@@ -20,10 +21,10 @@ class SSHConnection:
         return stdout, stderr
 
     def get(self, file):
-        self.scp.get(file)
+        return self.scp.get(file)
 
     def put(self, src, dst):
-        self.scp.put(src, dst)
+        return self.scp.put(src, dst)
 
     def __del__(self):
-        self.client.close()
+        return self.client.close()
