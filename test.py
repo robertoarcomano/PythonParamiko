@@ -4,6 +4,7 @@ import threading
 import time
 import random
 import os
+import re
 
 
 class Mytest(SSHConnection):
@@ -54,6 +55,30 @@ class Mytest(SSHConnection):
         stop = time.time()
         print("Speed using", kind, "connection:", round(N / (stop - start)), "executions / s")
 
+    def test_filters(self):
+        stdout, stderr = self.exec("ls -al /etc")
+        lines = list()
+        # Put all lines in lines[]
+        for line in stdout:
+            lines.append(line)
+        # Remove first item
+        lines = lines[1:]
+        # Take directories only
+        lines = filter(lambda x: re.search("^d", x.split()[0]), lines)
+        # Replace x to y in directory name and add length of directory
+        lines = map(
+            lambda x: " ".join(x.split()[:8] + [x.split()[8].replace("x", "y")] + [str(len(x.split()[8]))]),
+            lines
+        )
+        # Replace first occurrence of "root" with "apache"
+        lines = map(
+            lambda x: re.sub(r"root", "apache", x, count=1),
+            lines
+        )
+        for line in lines:
+            print(line)
+
+
 
 def main():
     test = Mytest()
@@ -62,6 +87,7 @@ def main():
     tests = ["single", "new"]
     for test_case in tests:
         test.test_connection(test_case)
+    test.test_filters()
 
 
 if __name__ == "__main__":
